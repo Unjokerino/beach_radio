@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Text } from '../components/Themed'
-import { View, StyleSheet, Dimensions, Image, ImageBackground, Animated } from 'react-native'
+import { View, StyleSheet, Dimensions, Image, ImageBackground, Animated, Platform } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Svg, G, Circle } from 'react-native-svg';
 import { Audio } from 'expo-av';
@@ -64,16 +64,30 @@ export default function PlayerScreen({ navigation }) {
     }
 
     const startPlaying = async () => {
-        await soundObject.playAsync();
+        const status = await soundObject.getStatusAsync()
+        if (status.isLoaded) {
+            await soundObject.playAsync()
+        } else {
+            await loadPlayer()
+            await soundObject.playAsync()
+        }
+
     }
 
     const stopPlaying = async () => {
-        await soundObject.stopAsync();
+
+        await soundObject.unloadAsync()
     }
 
     const loadPlayer = async () => {
         const mode = {
-            staysActiveInBackground: true
+            staysActiveInBackground: true,
+            interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+            shouldDuckAndroid: true,
+            playThroughEarpieceAndroid: false,
+            allowsRecordingIOS: true,
+            interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+            playsInSilentModeIOS: true,
         }
         Audio.setAudioModeAsync(mode)
         try {

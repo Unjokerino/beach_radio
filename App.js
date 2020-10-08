@@ -70,8 +70,12 @@ export default function App() {
               </TouchableOpacity>
             )
           })}
+              
         </View>
         <View style={styles.spacer} />
+        <TouchableOpacity onPress={() => _handleLinkPress('https://radio-beach.net/')} style={styles.textLink}>
+                <Text style={{color:'#fff',fontSize:18}}>Наш официальный сайт</Text>
+              </TouchableOpacity>
         <TouchableOpacity onPress={() => _handleLinkPress('https://radio-beach.net/')} style={styles.imageContainer}>
           <Image style={styles.image} source={require("./assets/logo.png")} />
         </TouchableOpacity>
@@ -125,6 +129,13 @@ const styles = StyleSheet.create({
 
     justifyContent: 'center',
     flexWrap: 'wrap',
+  },
+  textLink:{
+    width:'100%',
+    justifyContent:'center',
+    color:'white',
+    flexDirection:'row',
+    paddingHorizontal:18,
   },
   card: {
     justifyContent: 'center',
