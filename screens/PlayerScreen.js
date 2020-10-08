@@ -103,58 +103,54 @@ export default function PlayerScreen({ navigation }) {
 
     return (
         <View style={{ flex: 1, }}>
-            <MaskedScreen >
+            <View style={[styles.centered]}>
+                <ImageBackground blurRadius={20} resizeMode="stretch" source={playing ? { uri: currentSong.cover } : require('../assets/logo.png')} style={styles.container}>
+                    <View style={[StyleSheet.absoluteFill, { backgroundColor: 'black', opacity: 0.4 }]} />
+                    <Appbar style={{ backgroundColor: 'transparent', marginTop: Platform.OS === 'ios' ? 30 : 30, elevation: 0, minHeight: 50, justifyContent: 'space-between' }}>
+                        <Appbar.Action color='white' onPress={() => navigation.openDrawer()} icon="menu"></Appbar.Action>
+                        <Appbar.Action color='white' onPress={() => navigation.navigate('PlayListScreen')} icon="playlist-music" />
+                    </Appbar>
+                    <View style={styles.card}>
+                        {playing ?
+                            <Image style={styles.image} source={{ uri: currentSong.cover }} resizeMode="cover" />
+                            :
+                            <Image style={styles.image} source={require('../assets/logo.png')} resizeMode="contain" />
+                        }
+                        <View style={[StyleSheet.absoluteFill, { backgroundColor: 'black', opacity: 0.3 }]} />
+                    </View>
+                    <View style={styles.songTitleContainer}>
+                        {currentSong.title && <Text style={styles.title}>{currentSong.title}</Text>}
+                        {currentSong.author && <Text style={styles.subtitle}>{currentSong.author}</Text>}
 
+                    </View>
+                    <View style={styles.divider} />
+                    <View style={{ flex: 1, backgroundColor: '#22222254' }}>
+                        <View style={styles.playerContainer}>
+                            <DonutChart color="white" percentage={playing ? 100 : 0} >
+                                <View style={styles.player}>
+                                    <IconButton
+                                        icon={playing ? "stop" : "play"}
+                                        color="#E8C754"
+                                        size={72}
+                                        animated
+                                        onPress={togglePlayer}
+                                    />
+                                </View>
+                            </DonutChart>
 
-                <View style={[styles.centered]}>
-                    <ImageBackground blurRadius={20} resizeMode="stretch" source={playing ? { uri: currentSong.cover } : require('../assets/logo.png')} style={styles.container}>
-                        <View style={[StyleSheet.absoluteFill, { backgroundColor: 'black', opacity: 0.4 }]} />
-                        <Appbar style={{ backgroundColor: 'transparent', elevation: 0, minHeight: 50, justifyContent: 'space-between' }}>
-                            <Appbar.Action color='white' onPress={() => navigation.openDrawer()} icon="menu"></Appbar.Action>
-                            <Appbar.Action color='white' onPress={() => navigation.navigate('PlayListScreen')} icon="playlist-music" />
-                        </Appbar>
-                        <View style={styles.card}>
-                            {playing ?
-                                <Image style={styles.image} source={{ uri: currentSong.cover }} resizeMode="cover" />
-                                :
-                                <Image style={styles.image} source={require('../assets/logo.png')} resizeMode="contain" />
-                            }
-                            <View style={[StyleSheet.absoluteFill, { backgroundColor: 'black', opacity: 0.3 }]} />
-                        </View>
-                        <View style={styles.songTitleContainer}>
-                            {currentSong.title && <Text style={styles.title}>{currentSong.title}</Text>}
-                            {currentSong.author && <Text style={styles.subtitle}>{currentSong.author}</Text>}
-
-                        </View>
-                        <View style={styles.divider} />
-                        <View style={{ flex: 1, backgroundColor: '#22222254' }}>
-                            <View style={styles.playerContainer}>
-                                <DonutChart color="white" percentage={playing ? 100 : 0} >
-                                    <View style={styles.player}>
-                                        <IconButton
-                                            icon={playing ? "stop" : "play"}
-                                            color="#E8C754"
-                                            size={72}
-                                            animated
-                                            onPress={togglePlayer}
-                                        />
-                                    </View>
-                                </DonutChart>
-
-
-                            </View>
 
                         </View>
-                        <View style={styles.listenersContainer}>
-                            <IconButton
-                                icon="account-multiple"
-                                color="#fff"
-                            />
-                            <Text style={styles.listeners}>{currentListeners}</Text>
-                        </View>
-                    </ImageBackground>
-                </View>
-            </MaskedScreen>
+
+                    </View>
+                    <View style={styles.listenersContainer}>
+                        <IconButton
+                            icon="account-multiple"
+                            color="#fff"
+                        />
+                        <Text style={styles.listeners}>{currentListeners}</Text>
+                    </View>
+                </ImageBackground>
+            </View>
         </View>
     )
 }

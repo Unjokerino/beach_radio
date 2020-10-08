@@ -7,9 +7,10 @@ import ContactsScreen from './screens/ContactsScreen'
 import { Provider as PaperProvider, DefaultTheme } from 'react-native-paper';
 import MaskedScreen from './screens/MaskedScreen'
 import useCachedResources from './hooks/useCachedResources';
-import { Drawer as PaperDrawer, Avatar } from 'react-native-paper';
+import { Drawer as PaperDrawer, Avatar, List } from 'react-native-paper';
 import { Text } from './components/Themed'
 import * as Linking from 'expo-linking';
+import AnimatedSplash from "react-native-animated-splash-screen";
 
 const theme = {
   ...DefaultTheme,
@@ -24,16 +25,19 @@ const socialLinks = [
   {
     backgroundColor: '#7b9ab7',
     icon: 'vk',
+    title: 'Мы в VK',
     url: 'https://vk.com/public167327787'
   },
   {
     backgroundColor: '#7b9ab7',
     icon: 'instagram',
+    title: 'Мы в Instagram',
     url: 'https://www.instagram.com/beachradio/'
   },
   {
     backgroundColor: '#7b9ab7',
     icon: 'youtube',
+    title: 'Наш Youtube канал',
     url: 'https://www.youtube.com/channel/UCk_7AiozK9oAsjgMAuqjBRw?view_as=subscriber'
   }
 ]
@@ -63,19 +67,32 @@ export default function App() {
         />
         <View style={styles.cardContainer}>
           {socialLinks.map(link => {
-            const { icon, url } = link
+            const { icon, url, title } = link
             return (
               <TouchableOpacity onPress={() => _handleLinkPress(url)} key={url} style={styles.card}>
-                <Avatar.Icon style={{ backgroundColor: 'transparent' }} icon={icon} />
+                <View style={styles.cardTextContainer}>
+                  <Avatar.Icon style={{ backgroundColor: 'transparent' }} icon={icon} />
+                </View>
+                <View style={styles.cardTextContainer}>
+                  <Text style={styles.cardText}>{title}</Text>
+                </View>
+
               </TouchableOpacity>
             )
           })}
-              
+          <TouchableOpacity onPress={() => _handleLinkPress('https://radio-beach.net/')} style={styles.card}>
+            <View style={styles.cardTextContainer}>
+              <Image style={{ width: 40, height: 40, marginHorizontal: 12 }} resizeMode="contain" source={require('./assets/whiteIcon.png')} />
+            </View>
+            <View style={styles.cardTextContainer}>
+              <Text style={styles.cardText}>Наш официальный сайт</Text>
+            </View>
+
+          </TouchableOpacity>
+
         </View>
         <View style={styles.spacer} />
-        <TouchableOpacity onPress={() => _handleLinkPress('https://radio-beach.net/')} style={styles.textLink}>
-                <Text style={{color:'#fff',fontSize:18}}>Наш официальный сайт</Text>
-              </TouchableOpacity>
+
         <TouchableOpacity onPress={() => _handleLinkPress('https://radio-beach.net/')} style={styles.imageContainer}>
           <Image style={styles.image} source={require("./assets/logo.png")} />
         </TouchableOpacity>
@@ -83,25 +100,31 @@ export default function App() {
     );
   }
 
-  if (!isLoadingComplete) {
-    return null
-  } else {
-    return (
-      <View style={{ flex: 1 }}>
 
+  return (
+    <View style={{ flex: 1 }}>
+
+      <AnimatedSplash
+        translucent={true}
+        isLoaded={isLoadingComplete}
+        logoImage={require("./assets/logo.png")}
+        backgroundColor={"#262626"}
+        logoHeight={150}
+        logoWidth={150}
+      >
         <StatusBar barStyle='light-content' />
-
         <NavigationContainer>
           <Drawer.Navigator drawerContent={(props) => <CustomDrawerContent {...props} />} color="white" drawerStyle={{ backgroundColor: theme.colors.primary, color: 'white' }} initialRouteName="Плеер">
             <Drawer.Screen name="Плеер" component={PlayerStack} />
             <Drawer.Screen name="Контакты" component={ContactsScreen} />
           </Drawer.Navigator>
         </NavigationContainer>
+      </AnimatedSplash>
 
 
-      </View>
-    );
-  }
+    </View>
+  );
+
 }
 
 
@@ -130,21 +153,29 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexWrap: 'wrap',
   },
-  textLink:{
-    width:'100%',
-    justifyContent:'center',
-    color:'white',
-    flexDirection:'row',
-    paddingHorizontal:18,
+  textLink: {
+    width: '100%',
+    justifyContent: 'center',
+    color: 'white',
+    flexDirection: 'row',
+    paddingHorizontal: 18,
   },
   card: {
-    justifyContent: 'center',
     alignContent: 'center',
     borderRadius: 15,
-
-    width: 50,
+    flexDirection: 'row',
     height: 50,
     margin: 5,
     backgroundColor: '#2A2F33',
+  },
+  cardTextContainer: {
+
+    justifyContent: 'center',
+
+  },
+  cardText: {
+    color: 'white',
+
+    height: 'auto'
   }
 })

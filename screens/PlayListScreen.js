@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Text } from '../components/Themed'
-import { SafeAreaView, View, FlatList, StyleSheet, StatusBar, Image, ActivityIndicator, RefreshControl } from 'react-native';
+import { Platform, View, FlatList, StyleSheet, StatusBar, Image, ActivityIndicator, RefreshControl } from 'react-native';
 import { IconButton, Colors, Appbar, List } from 'react-native-paper';
 
 export default function PlayListScreen({ navigation }) {
@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
         width: 50
     },
     header: {
+        marginTop: Platform.OS === 'ios' ? 30 : 30,
         minHeight: 50,
         backgroundColor: 'transparent',
         elevation: 0
