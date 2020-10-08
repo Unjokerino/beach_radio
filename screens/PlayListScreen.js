@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Text } from '../components/Themed'
-import { SafeAreaView, View, FlatList, StyleSheet, StatusBar, Image } from 'react-native';
+import { SafeAreaView, View, FlatList, StyleSheet, StatusBar, Image, ActivityIndicator, RefreshControl } from 'react-native';
 import { IconButton, Colors, Appbar, List } from 'react-native-paper';
 
 export default function PlayListScreen({ navigation }) {
@@ -15,15 +15,27 @@ export default function PlayListScreen({ navigation }) {
         setloading(true)
         try {
             const response = await fetch('https://myradio24.com/users/1632/status.json')
-            const playlist = (await response.json()).songs
-            const tempPlayList = playlist.map(element => {
+            const json = await response.json()
+            const playList = json.songs
+            const currentSong = json.song
+            const nexSongs = json.nextsongs
+            const tempPlayList = playList.map(element => {
                 const obj = {}
                 obj.time = element[0]
+                obj.current = currentSong === element[1]
                 obj.title = element[1]
                 obj.cover = `https://myradio24.com/${element[2]}`
                 return obj
             });
-            setplaylist(tempPlayList.reverse())
+            const tempNextSongs = nexSongs.map(element => {
+                const obj = {}
+                obj.time = 'следующая песня'
+                obj.title = element
+
+                obj.cover = `https://myradio24.com/img/nocover.jpg`
+                return obj
+            })
+            setplaylist([...tempNextSongs, ...tempPlayList.reverse(),])
             setloading(false)
         } catch (error) {
             console.log(error)
@@ -32,19 +44,19 @@ export default function PlayListScreen({ navigation }) {
 
     }
 
-    const Item = ({ title, time, cover }) => (
-        <View style={{ borderBottomColor: '#2A2F33', borderBottomWidth: 1 }}>
+    const Item = ({ title, time, cover, current }) => (
+        <View style={{ borderBottomColor: '#2A2F33', borderBottomWidth: 1, backgroundColor: current ? 'black' : 'transparent' }}>
             <List.Item
                 titleStyle={{ color: 'white' }}
                 descriptionStyle={{ color: 'white' }}
                 title={title}
-                description={time}
+                description={time || ''}
                 left={props => <Image style={styles.imageCover} source={{ uri: cover }} />}
             />
         </View>
     );
     const renderItem = ({ item }) => (
-        <Item cover={item.cover} time={item.time} title={item.title} />
+        <Item current={item.current} cover={item.cover} time={item.time} title={item.title} />
     );
     return (
 
@@ -56,6 +68,9 @@ export default function PlayListScreen({ navigation }) {
                 <Appbar.Content color="white" title="Плейлист" />
             </Appbar>
             <FlatList
+                refreshControl={
+                    <RefreshControl refreshing={loading} onRefresh={getPlaylist} />
+                }
                 data={playlist}
                 renderItem={renderItem}
                 keyExtractor={item => item.time}

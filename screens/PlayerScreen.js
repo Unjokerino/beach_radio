@@ -5,8 +5,8 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Svg, G, Circle } from 'react-native-svg';
 import { Audio } from 'expo-av';
 import { IconButton, Colors, Appbar } from 'react-native-paper';
-import MaskedView from '@react-native-community/masked-view';
 import DonutChart from '../components/DonatChart'
+import MaskedScreen from './MaskedScreen'
 
 const width = Dimensions.get('window').width
 const player_url = 'https://myradio24.org/1632'
@@ -53,7 +53,7 @@ export default function PlayerScreen({ navigation }) {
         const author = status.song.split('-')[0]
 
         setCurrentSong({ title, author, cover: `https://myradio24.com/${status.img}` })
-        setCurrentListeners(status.plisteners || 0)
+        setCurrentListeners(status.listeners || 0)
 
     }
     const togglePlayer = async () => {
@@ -89,58 +89,58 @@ export default function PlayerScreen({ navigation }) {
 
     return (
         <View style={{ flex: 1, }}>
+            <MaskedScreen >
 
 
-
-            <Animated.View style={[styles.centered]}>
-                <ImageBackground blurRadius={20} resizeMode="stretch" source={playing ? { uri: currentSong.cover } : require('../assets/logo.png')} style={styles.container}>
-                    <View style={[StyleSheet.absoluteFill, { backgroundColor: 'black', opacity: 0.4 }]} />
-                    <Appbar style={{ backgroundColor: 'transparent', elevation: 0, minHeight: 50, justifyContent: 'space-between' }}>
-                        <Appbar.Action color='white' onPress={() => navigation.openDrawer()} icon="menu"></Appbar.Action>
-                        <Appbar.Action color='white' onPress={() => navigation.navigate('PlayListScreen')} icon="playlist-music" />
-                    </Appbar>
-                    <View style={styles.card}>
-                        {playing ?
-                            <Image style={styles.image} source={{ uri: currentSong.cover }} resizeMode="cover" />
-                            :
-                            <Image style={styles.image} source={require('../assets/logo.png')} resizeMode="contain" />
-                        }
-                        <View style={[StyleSheet.absoluteFill, { backgroundColor: 'black', opacity: 0.3 }]} />
-                    </View>
-                    <View style={styles.songTitleContainer}>
-                        {currentSong.title && <Text style={styles.title}>{currentSong.title}</Text>}
-                        {currentSong.author && <Text style={styles.subtitle}>{currentSong.author}</Text>}
-
-                    </View>
-                    <View style={styles.divider} />
-                    <View style={{ flex: 1, backgroundColor: '#22222254' }}>
-                        <View style={styles.playerContainer}>
-                            <DonutChart color="white" percentage={playing ? 100 : 0} >
-                                <View style={styles.player}>
-                                    <IconButton
-                                        icon={playing ? "stop" : "play"}
-                                        color="#E8C754"
-                                        size={72}
-                                        animated
-                                        onPress={togglePlayer}
-                                    />
-                                </View>
-                            </DonutChart>
-
+                <View style={[styles.centered]}>
+                    <ImageBackground blurRadius={20} resizeMode="stretch" source={playing ? { uri: currentSong.cover } : require('../assets/logo.png')} style={styles.container}>
+                        <View style={[StyleSheet.absoluteFill, { backgroundColor: 'black', opacity: 0.4 }]} />
+                        <Appbar style={{ backgroundColor: 'transparent', elevation: 0, minHeight: 50, justifyContent: 'space-between' }}>
+                            <Appbar.Action color='white' onPress={() => navigation.openDrawer()} icon="menu"></Appbar.Action>
+                            <Appbar.Action color='white' onPress={() => navigation.navigate('PlayListScreen')} icon="playlist-music" />
+                        </Appbar>
+                        <View style={styles.card}>
+                            {playing ?
+                                <Image style={styles.image} source={{ uri: currentSong.cover }} resizeMode="cover" />
+                                :
+                                <Image style={styles.image} source={require('../assets/logo.png')} resizeMode="contain" />
+                            }
+                            <View style={[StyleSheet.absoluteFill, { backgroundColor: 'black', opacity: 0.3 }]} />
+                        </View>
+                        <View style={styles.songTitleContainer}>
+                            {currentSong.title && <Text style={styles.title}>{currentSong.title}</Text>}
+                            {currentSong.author && <Text style={styles.subtitle}>{currentSong.author}</Text>}
 
                         </View>
+                        <View style={styles.divider} />
+                        <View style={{ flex: 1, backgroundColor: '#22222254' }}>
+                            <View style={styles.playerContainer}>
+                                <DonutChart color="white" percentage={playing ? 100 : 0} >
+                                    <View style={styles.player}>
+                                        <IconButton
+                                            icon={playing ? "stop" : "play"}
+                                            color="#E8C754"
+                                            size={72}
+                                            animated
+                                            onPress={togglePlayer}
+                                        />
+                                    </View>
+                                </DonutChart>
 
-                    </View>
-                    <View style={styles.listenersContainer}>
-                        <IconButton
-                            icon="account-multiple"
-                            color="#fff"
-                        />
-                        <Text style={styles.listeners}>{currentListeners}</Text>
-                    </View>
-                </ImageBackground>
-            </Animated.View>
 
+                            </View>
+
+                        </View>
+                        <View style={styles.listenersContainer}>
+                            <IconButton
+                                icon="account-multiple"
+                                color="#fff"
+                            />
+                            <Text style={styles.listeners}>{currentListeners}</Text>
+                        </View>
+                    </ImageBackground>
+                </View>
+            </MaskedScreen>
         </View>
     )
 }

@@ -80,12 +80,11 @@ export default function App() {
   }
 
   if (!isLoadingComplete) {
-    return (<View style={{ backgroundColor: '#2A2F33', flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <ActivityIndicator size="large" />
-    </View>)
+    return null
   } else {
     return (
       <View style={{ flex: 1 }}>
+
         <StatusBar barStyle='light-content' />
 
         <NavigationContainer>
@@ -94,6 +93,7 @@ export default function App() {
             <Drawer.Screen name="Контакты" component={ContactsScreen} />
           </Drawer.Navigator>
         </NavigationContainer>
+
 
       </View>
     );
