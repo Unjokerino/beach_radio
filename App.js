@@ -103,7 +103,7 @@ export default function App() {
 
   return (
     <View style={{ flex: 1 }}>
-
+      <StatusBar barStyle='light-content' />
       <AnimatedSplash
         translucent={true}
         isLoaded={isLoadingComplete}
@@ -112,7 +112,7 @@ export default function App() {
         logoHeight={150}
         logoWidth={150}
       >
-        <StatusBar barStyle='light-content' />
+
         <NavigationContainer>
           <Drawer.Navigator drawerContent={(props) => <CustomDrawerContent {...props} />} color="white" drawerStyle={{ backgroundColor: theme.colors.primary, color: 'white' }} initialRouteName="Плеер">
             <Drawer.Screen name="Плеер" component={PlayerStack} />
