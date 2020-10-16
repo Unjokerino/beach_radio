@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Text } from '../components/Themed'
-import { View, StyleSheet, Dimensions, Image, ImageBackground, Animated, Platform } from 'react-native'
+import { View, StyleSheet, ActivityIndicator, Dimensions, Image, ImageBackground, Animated, Platform } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Svg, G, Circle } from 'react-native-svg';
 import { Audio } from 'expo-av';
@@ -21,7 +21,7 @@ export default function PlayerScreen({ navigation }) {
     const [playing, setPlaying] = useState(false)
     const [currentListeners, setCurrentListeners] = useState(0)
     const [currentSong, setCurrentSong] = useState({})
-
+    const [loading, setloading] = useState(false)
     const circleRef = useRef()
     const radius = width / 6
     const strokeWidth = 10
@@ -35,13 +35,15 @@ export default function PlayerScreen({ navigation }) {
     useEffect(() => {
         loadPlayer()
         getStatus()
+        
         const interval = setInterval(() => {
             getStatus()
         }, 5000);
+        
         return (() => {
             clearInterval(interval)
         })
-
+      
     }, [])
 
 
@@ -64,12 +66,21 @@ export default function PlayerScreen({ navigation }) {
     }
 
     const startPlaying = async () => {
+        setloading(true)
         const status = await soundObject.getStatusAsync()
+        console.log(status)
         if (status.isLoaded) {
+            //await loadPlayer()
+            console.log('LOADING: ',loading)
             await soundObject.playAsync()
+            setloading(false)
         } else {
             await loadPlayer()
             await soundObject.playAsync()
+            setloading(false)
+            
+       
+            //await startPlaying()
         }
 
     }
@@ -85,7 +96,7 @@ export default function PlayerScreen({ navigation }) {
             interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
             shouldDuckAndroid: true,
             playThroughEarpieceAndroid: false,
-            allowsRecordingIOS: true,
+            allowsRecordingIOS: false,
             interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
             playsInSilentModeIOS: true,
         }
@@ -97,6 +108,7 @@ export default function PlayerScreen({ navigation }) {
             // Don't forget to unload the sound from memory
             // when you are done using the Sound object
         } catch (error) {
+        
             console.log(error)
         }
     }
@@ -104,7 +116,7 @@ export default function PlayerScreen({ navigation }) {
     return (
         <View style={{ flex: 1, }}>
             <View style={[styles.centered]}>
-                <ImageBackground blurRadius={20} resizeMode="stretch" source={playing ? { uri: currentSong.cover } : require('../assets/logo.png')} style={styles.container}>
+                <ImageBackground blurRadius={20} resizeMode="cover" source={playing ? { uri: currentSong.cover } : require('../assets/logo.png')} style={styles.container}>
                     <View style={[StyleSheet.absoluteFill, { backgroundColor: 'black', opacity: 0.4 }]} />
                     <Appbar style={{ backgroundColor: 'transparent', marginTop: Platform.OS === 'ios' ? 30 : 30, elevation: 0, minHeight: 50, justifyContent: 'space-between' }}>
                         <Appbar.Action color='white' onPress={() => navigation.openDrawer()} icon="menu"></Appbar.Action>
@@ -128,6 +140,7 @@ export default function PlayerScreen({ navigation }) {
                         <View style={styles.playerContainer}>
                             <DonutChart color="white" percentage={playing ? 100 : 0} >
                                 <View style={styles.player}>
+                                    {loading ? <ActivityIndicator size="large" color="#E8C754"/> :
                                     <IconButton
                                         icon={playing ? "stop" : "play"}
                                         color="#E8C754"
@@ -135,6 +148,7 @@ export default function PlayerScreen({ navigation }) {
                                         animated
                                         onPress={togglePlayer}
                                     />
+                                }
                                 </View>
                             </DonutChart>
 

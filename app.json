@@ -28,7 +28,7 @@
       "favicon": "./assets/favicon.png"
     },
     "android": {
-      "versionCode": 2,
+      "versionCode": 3,
       "permissions": [],
       "package": "com.mironov.beachradio"
     }
